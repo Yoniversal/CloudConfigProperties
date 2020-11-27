@@ -1,2 +1,5 @@
-greeting:
-  message: Hi, this is message from cloud in prod env
+data:
+  env: config-eureka-prod
+  user:
+    username: eureka-client-user
+    password: 20201127
