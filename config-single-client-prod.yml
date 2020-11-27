@@ -1,0 +1,2 @@
+greeting:
+  message: Hi, this is message from cloud in prod env
