@@ -1,5 +1,5 @@
 data:
   env: config-eureka-prod
   user:
-    username: eureka-client-user
+    username: Common-Properties
     password: 20201127
