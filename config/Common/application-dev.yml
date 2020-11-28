@@ -1,5 +1,5 @@
 data:
-  env: config-eureka-dev
-  user:
-    username: Common-Properties
-    password: 20201127
+  appName: Demo dev
+  appInfo:
+    createdDt: 2020
+    developer: Henry
