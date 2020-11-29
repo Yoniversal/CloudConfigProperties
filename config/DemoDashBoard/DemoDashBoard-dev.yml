@@ -1,0 +1,7 @@
+data:
+  env: config-eureka-dev
+  user:
+    username: eureka-client-user
+    password: 20201127
+  header:
+    require-validation: false
