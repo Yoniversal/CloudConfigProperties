@@ -1,0 +1,100 @@
+version: '2.2'
+services:
+    config-server:
+      container_name: config-server
+      build:
+          context: ./config-server
+          dockerfile: Dockerfile
+      image: config-server
+      expose:
+          - 8888
+      ports:
+          - 8888:8888
+      healthcheck:
+          test: ["CMD", "curl", "-f", "http://localhost:8888"]
+          interval: 30s
+          timeout: 10s
+          retries: 5
+      networks:
+          - demo-net
+
+    eureka-server:
+      container_name: eureka-server
+      build:
+          context: ./netflixEureka
+          dockerfile: Dockerfile
+      image: eureka-server
+      expose:
+          - 8761
+      ports:
+          - 8761:8761
+      healthcheck:
+          test: ["CMD", "curl", "-f", "http://localhost:8761"]
+          interval: 30s
+          timeout: 10s
+          retries: 5
+      networks:
+          - demo-net
+
+    gateway:
+      container_name: gateway
+      build:
+          context: ./Gateway
+          dockerfile: Dockerfile
+      image: gateway
+      environment:
+          SPRING_APPLICATION_JSON: '{ "spring": { "cloud": { "config": { "uri": "http://config-server:8888" } } }, "eureka": { "client": { "service-url": { "defaultZone": "http://eureka-server:8761/eureka/" } } }, "zuul": { "routes": { "DemoDashBoard": { "url": "http://dashboard:8081" } } } }'
+      expose:
+          - 8090
+      ports:
+          - 8090:8090
+      networks:
+          - demo-net
+      links:
+          - eureka-server
+      depends_on:
+          eureka-server:
+              condition: service_healthy
+
+    dashboard:
+      container_name: dashboard
+      build:
+          context: ./demoDashBoard
+          dockerfile: Dockerfile
+      image: dashboard
+      environment:
+          SPRING_APPLICATION_JSON: '{ "spring": { "cloud": { "config": { "uri": "http://config-server:8888" } } }, "eureka": { "client": { "service-url": { "defaultZone": "http://eureka-server:8761/eureka/" } } } }'
+      expose:
+          - 8081
+      ports:
+          - 8081:8081
+      networks:
+          - demo-net
+      links:
+          - eureka-server
+      depends_on:
+          eureka-server:
+              condition: service_healthy
+
+    demo:
+      container_name: demo
+      build:
+          context: ./demo
+          dockerfile: Dockerfile
+      image: demo
+      environment:
+          SPRING_APPLICATION_JSON: '{ "spring": { "cloud": { "config": { "uri": "http://config-server:8888" } } }, "eureka": { "client": { "service-url": { "defaultZone": "http://eureka-server:8761/eureka/" } } } }'
+      expose:
+          - 8082
+      ports:
+          - 8082:8082
+      networks:
+          - demo-net
+      links:
+          - eureka-server
+      depends_on:
+          eureka-server:
+              condition: service_healthy
+networks:
+    demo-net:
+        driver: bridge

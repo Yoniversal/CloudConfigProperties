@@ -1,0 +1,38 @@
+# Delete every Docker containers
+# Must be run first because images are attached to containers
+docker rm -f $(docker ps -a -q)
+
+# Delete every Docker image
+docker rmi -f $(docker images -q)
+
+docker network ls
+
+config server: 
+docker build -f Dockerfile -t config-server .
+docker run -p 8888:8888 config-server
+docker run --name=config-server --publish=8888:8888 config-server
+
+eureka server:
+docker build -f Dockerfile -t eureka-server .
+docker run -p 8761:8761 eureka-server
+docker run --name=eureka-server --publish=8761:8761 eureka-server
+
+demo dashboard:
+docker build -f Dockerfile -t dashboard .
+docker run -p 8081:8081 dashboard
+docker run --name=dashboard --publish=8081:8081 dashboard
+
+demo:
+docker build -f Dockerfile -t demo .
+docker run -p 8082:8082 demo
+docker run --name=demo --publish=8082:8082 demo
+
+docker-compose:
+docker rmi -f $(docker images -q)
+docker rm -f $(docker ps -a -q)
+docker-compose up --build
+
+docker-compose up --detach --build
+
+docker-compose down
+
