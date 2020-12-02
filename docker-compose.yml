@@ -43,7 +43,7 @@ services:
           dockerfile: Dockerfile
       image: gateway
       environment:
-          SPRING_APPLICATION_JSON: '{ "spring": { "cloud": { "config": { "uri": "http://config-server:8888" } } }, "eureka": { "client": { "service-url": { "defaultZone": "http://eureka-server:8761/eureka/" } } }, "zuul": { "routes": { "DemoDashBoard": { "url": "http://dashboard:8081" } } } }'
+          SPRING_APPLICATION_JSON: '{ "spring": { "cloud": { "config": { "uri": "http://config-server:8888" } } } }'
       expose:
           - 8090
       ports:
